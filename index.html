@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cutie Reader Gallery</title>
+<style>
+  /* GLOBAL STYLING */
+  body { 
+    margin: 0; 
+    font-family: 'Poppins', sans-serif; 
+    background: linear-gradient(160deg, #f9f3ff, #ffe4f0);
+    color: #333; 
+    overflow-x: hidden;
+  }
+  header { 
+    text-align: center; 
+    padding: 50px 20px; 
+    font-size: 42px; 
+    font-weight: 800; 
+    letter-spacing: 2px; 
+    color: #ff6eb4; 
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+  }
+
+  /* OVERLAY BOXES */
+  .overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 240, 250, 0.95); display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+  }
+  .box {
+    background: #fff0f5; 
+    padding: 35px; 
+    border-radius: 25px; 
+    text-align: center; 
+    min-width: 320px; 
+    max-width: 420px;
+    position: relative;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    border: 2px solid #ffb6c1;
+    transition: all 0.4s ease;
+  }
+  .box::before {
+    content: '💖✨';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+  }
+  .box p { font-size: 20px; margin: 20px 0; color: #ff4fa3; font-weight: 600; }
+
+  /* BUTTONS */
+  .box button { 
+    margin: 10px; 
+    padding: 12px 30px; 
+    font-size: 17px; 
+    cursor: pointer; 
+    border-radius: 15px; 
+    border: none;
+    background: linear-gradient(135deg, #ffb6c1, #ff82a9); 
+    color: #fff;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+  .box button:hover {
+    background: linear-gradient(135deg, #ff82a9, #ff4fa3);
+    transform: translateY(-3px) scale(1.05);
+  }
+  .fade { opacity: 0; transition: opacity 0.5s ease; }
+
+  /* PULSE ANIMATION */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+  }
+  .pulse {
+    animation: pulse 0.8s infinite;
+  }
+
+  /* GALLERY */
+  .gallery { 
+    display: none; 
+    column-count: 4; 
+    column-gap: 25px; 
+    padding: 40px 20px; 
+  }
+  @media (max-width: 1100px) { .gallery { column-count: 3; } }
+  @media (max-width: 800px) { .gallery { column-count: 2; } }
+  @media (max-width: 500px) { .gallery { column-count: 1; } }
+
+  .card { 
+    background: #fff0f5; 
+    margin: 0 0 25px; 
+    border-radius: 20px; 
+    overflow: hidden; 
+    display: inline-block; 
+    width: 100%; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+    cursor: pointer; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  }
+  .card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2); 
+  }
+  .card img { 
+    width: 100%; 
+    display: block; 
+    border-bottom: 2px solid #ffc0cb; 
+    object-fit: cover; 
+    transition: transform 0.3s ease;
+  }
+  .card:hover img { transform: scale(1.05); }
+  .card-content { 
+    padding: 15px 20px; 
+    max-height: 60px; 
+    overflow: hidden; 
+    transition: max-height 0.5s ease; 
+  }
+  .card.expanded .card-content { max-height: 500px; }
+  .card-title { 
+    font-size: 20px; 
+    margin: 0; 
+    font-weight: 700; 
+    color: #ff6eb4; 
+    overflow: hidden; 
+    white-space: nowrap; 
+  }
+  .card-text { 
+    font-size: 15px; 
+    margin-top: 8px; 
+    color: #555; 
+    line-height: 1.5; 
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+  }
+  .card.expanded .card-text { opacity: 1; }
+
+  /* TYPING EFFECT */
+  .typing span { display: inline-block; opacity: 0; transform: translateY(10px); animation: appear 0.5s forwards; }
+  @keyframes appear { to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>🌸 My Cute Art Gallery 🌸</header>
+
+<div class="overlay" id="helloBox">
+  <div class="box">
+    <p>Hiii Cyrille!</p>
+    <button id="nextBtn">Next</button>
+  </div>
+</div>
+
+<div class="overlay" id="openBox" style="display:none;">
+  <div class="box">
+    <p>Do you want to open it?</p>
+    <button id="openBtn">Open it</button>
+    <button id="noTyBtn">No ty</button>
+  </div>
+</div>
+
+<div class="overlay" id="letterBox1" style="display:none;">
+  <div class="box">
+    <p>💌 Here is your first secret letter!</p>
+    <button id="nextLetterBtn">Next</button>
+  </div>
+</div>
+
+<div class="overlay" id="letterBox2" style="display:none;">
+  <div class="box">
+    <p>💌 Here is your second secret letter!</p>
+    <button id="startOverBtn">Start Over</button>
+  </div>
+</div>
+
+<section class="gallery" id="gallery">
+  <div class="card">
+    <img src="Me Drawing.jpg" alt="Me Drawing">
+    <div class="card-content">
+      <p class="card-title typing" data-text="Me Drawing"></p>
+      <p class="card-text">This is a detailed description of my drawing. Click the card to expand or collapse.</p>
+    </div>
+  </div>
+  <div class="card">
+    <img src="AnotherPhoto.jpg" alt="Another Photo">
+    <div class="card-content">
+      <p class="card-title typing" data-text="Another Photo"></p>
+      <p class="card-text">This card contains more info about the second photo.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    document.getElementById('helloBox').style.display = 'none';
+    document.getElementById('openBox').style.display = 'flex';
+  });
+
+  document.getElementById('noTyBtn').addEventListener('click', () => {
+    const noTy = document.getElementById('noTyBtn');
+    const openBtn = document.getElementById('openBtn');
+    noTy.classList.add('fade');
+    openBtn.classList.add('pulse');
+  });
+
+  document.getElementById('openBtn').addEventListener('click', () => {
+    document.getElementById('openBox').style.display = 'none';
+    document.getElementById('letterBox1').style.display = 'flex';
+  });
+
+  document.getElementById('nextLetterBtn').addEventListener('click', () => {
+    document.getElementById('letterBox1').style.display = 'none';
+    document.getElementById('letterBox2').style.display = 'flex';
+  });
+
+  document.getElementById('startOverBtn').addEventListener('click', () => {
+    document.getElementById('letterBox2').style.display = 'none';
+    document.getElementById('gallery').style.display = 'block';
+
+    document.querySelectorAll('.typing').forEach(title => {
+      const text = title.dataset.text;
+      title.innerHTML = '';
+      [...text].forEach((letter, i) => {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.style.animationDelay = `${i * 0.05}s`;
+        title.appendChild(span);
+      });
+    });
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => card.classList.toggle('expanded'));
+    });
+  });
+</script>
+</body>
+</html>
