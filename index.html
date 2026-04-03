@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cutie Reader Gallery</title>
+  <style>
+    /* PAGE STYLING */
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: #faf9f7;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #444;
+      border-bottom: 2px solid #e1dcd6;
+    }
+
+    /* MASONRY / PINTEREST GRID */
+    .gallery {
+      column-count: 4;
+      column-gap: 20px;
+      padding: 30px 15px;
+    }
+
+    @media (max-width: 1100px) {
+      .gallery {
+        column-count: 3;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .gallery {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .gallery {
+        column-count: 1;
+      }
+    }
+
+    /* CARD STYLING */
+    .card {
+      background: #d3d3d3;
+      margin: 0 0 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid #ece7e2;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 12px 15px;
+      max-height: 60px; /* collapsed height */
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .card.expanded .card-content {
+      max-height: 500px; /* expanded height */
+    }
+
+    .card-title {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 700;
+      color: #2a2928;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .card-text {
+      font-size: 14px;
+      margin-top: 5px;
+      color: #5c5957;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card.expanded .card-text {
+      opacity: 1;
+    }
+
+    /* TYPING ANIMATION */
+    .typing span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: appear 0.5s forwards;
+    }
+
+    @keyframes appear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>My Art Gallery</header>
+
+  <section class="gallery">
+
+    <div class="card">
+      <img src="Me Drawing.jpg" alt="Me Drawing">
+      <div class="card-content">
+        <p class="card-title typing" data-text="Me Drawing"></p>
+        <p class="card-text">This is a detailed description of my drawing. Click the card to expand or collapse.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="AnotherPhoto.jpg" alt="Another Photo">
+      <div class="card-content">
+        <p class="card-title typing" data-text="Another Photo"></p>
+        <p class="card-text">This card contains more info about the second photo.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    // Animate the typing for each card title
+    document.querySelectorAll('.typing').forEach(title => {
+      const text = title.dataset.text;
+      title.innerHTML = ''; // Clear placeholder
+      [...text].forEach((letter, i) => {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.style.animationDelay = `${i * 0.05}s`; // 50ms per letter
+        title.appendChild(span);
+      });
+    });
+
+    // Toggle expand/collapse on click
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+      });
+    });
+  </script>
+
+</body>
+
+</html>
